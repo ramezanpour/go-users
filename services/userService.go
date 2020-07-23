@@ -104,8 +104,7 @@ func (us UserService) getByToken(c *gin.Context) {
 	claims, err := security.ParseToken(tokenString)
 
 	if err != nil {
-		// c.AbortWithStatusJSON(http.StatusBadRequest, resources.CannotParseToken)
-		c.AbortWithError(401, err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, resources.CannotParseToken)
 		return
 	}
 
