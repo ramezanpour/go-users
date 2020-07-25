@@ -14,4 +14,5 @@ type UserViewModel struct {
 	LastName  string    `json:"lastName,omitempty"`
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	Token     string    `json:"token,omitempty"`
+	IsActive  bool      `json:"active"`
 }

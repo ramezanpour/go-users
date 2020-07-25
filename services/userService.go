@@ -21,6 +21,7 @@ func (us UserService) Serve(engine *gin.Engine) {
 	engine.POST("/users/signup", us.signup)
 	engine.GET("/users/token", us.getByToken)
 	engine.GET("/users/get/:id", us.getUserbyID)
+	engine.PUT("/users/active/:id", us.toggleActive)
 	engine.GET("/users", us.getAll)
 	database.Db.AutoMigrate(&models.User{})
 }
@@ -94,6 +95,7 @@ func getUserViewModel(user *models.User, token string) *dao.UserViewModel {
 		LastName:  user.LastName,
 		CreatedAt: user.CreatedAt,
 		Token:     token,
+		IsActive:  user.IsActive,
 	}
 
 	return result
@@ -157,4 +159,27 @@ func (us UserService) getAll(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, &users)
+}
+
+func (us UserService) toggleActive(c *gin.Context) {
+	userID, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, resources.InvalidRequest)
+		return
+	}
+
+	var user models.User
+
+	if database.Db.First(&user, userID).RecordNotFound() {
+		c.AbortWithStatusJSON(http.StatusNotFound, resources.NotFound)
+		return
+	}
+
+	if err := database.Db.Model(&user).Update("IsActive", !user.IsActive).Error; err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, resources.UnableToUpdateTheRecord)
+		return
+	}
+
+	c.JSON(http.StatusOK, getUserViewModel(&user, ""))
+
 }

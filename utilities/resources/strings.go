@@ -16,3 +16,4 @@ var UsernameAlreadyExists = prepareMessage("The specified username is already ex
 var CannotCreateToken = prepareMessage("Cannot create token due to a server error")
 var CannotParseToken = prepareMessage("Cannot parse the specified token")
 var InvalidPage = prepareMessage("Invalid page")
+var UnableToUpdateTheRecord = prepareMessage("Unable to update the database record")
